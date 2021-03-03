@@ -31,7 +31,7 @@ fn main() {
     }
 
     // read encrypted messages and pads and decrypt
-    for i in 0..msgs.len() {
+    for i in 2..4 {
         let path = format!("encrypted_{}", i);
         let pad_path = format!("pad_{}", i);
         let mut file = File::open(path).unwrap();
@@ -41,7 +41,9 @@ fn main() {
         file.read_to_string(&mut encrypted).unwrap();
         pad_file.read_to_string(&mut pad).unwrap();
         encrypted = str::replace(&encrypted, "\n", "");
+        encrypted = str::replace(&encrypted, " ", "");
         pad = str::replace(&pad, "\n", "");
+        pad = str::replace(&pad, " ", "");
         let encrypted_split: Vec<&str> = encrypted.split(',').collect();
         let pad_split: Vec<&str> = pad.split(',').collect();
         let enc_bytes: Vec<u8> = encrypted_split
@@ -54,6 +56,7 @@ fn main() {
             .zip(pad_bytes.iter())
             .map(|(&a, &b)| a ^ b)
             .collect();
+        println!("desencriptando mensaje {:?} con pad {:?}", encrypted, pad);
         println!("{}", String::from_utf8(decrypted).unwrap());
     }
 }
